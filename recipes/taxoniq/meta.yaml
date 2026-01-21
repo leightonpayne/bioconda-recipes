@@ -1,0 +1,54 @@
+{% set version = "1.0.3" %}
+
+package:
+  name: taxoniq
+  version: {{ version }}
+
+source:
+  url: https://pypi.org/packages/source/t/taxoniq/taxoniq-{{ version }}.tar.gz
+  sha256: 538ae19d56b72707b2caf3e9948ad4946597c6677e76e36d3b77638ad9e3709b
+
+build:
+  number: 0
+  entry_points:
+    - taxoniq=taxoniq.cli:cli
+  noarch: python
+  script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
+  run_exports:
+    - {{ pin_subpackage('taxoniq', max_pin="x.x") }}
+
+requirements:
+  host:
+    - python
+    - pip
+  run:
+    - python
+    - marisa-trie >=1.1.0
+    - zstandard >=0.21.0
+    - urllib3 >=1.26.5
+    - ncbi-taxon-db >=2024.9.07
+
+test:
+  imports:
+    - taxoniq
+  commands:
+    - pip check
+    - taxoniq --help
+  requires:
+    - pip
+
+about:
+  home: https://github.com/chanzuckerberg/taxoniq
+  summary: 'Taxoniq: Taxon Information Query - fast, offline querying of NCBI Taxonomy and related data'
+  license: MIT AND EPL-2.0
+  license_file:
+    - LICENSE
+    - LICENSE.NCBI
+    - LICENSE.WIKIPEDIA
+
+extra:
+  additional-platforms:
+    - linux-aarch64
+    - osx-arm64
+  recipe-maintainers:
+    - leightonpayne
